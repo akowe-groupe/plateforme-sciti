@@ -198,8 +198,8 @@ Tâches C-4 et C-6 (C avec A). Sprint 2.
 - Réponse 200 (étudiant, professeur) : `{ user, mustChangePassword }` + cookie de session.
 - Réponse 200 (directeur, RP, adjoint) : `{ twoFactorRequired: true, challengeId }`. Un code
   est envoyé par e-mail. Aucun jeton n'est encore donné.
-- Erreurs : 400 (format invalide), 401 `INVALID_CREDENTIALS` (message unique : « E-mail,
-  mot de passe ou code administrateur incorrect. », sans dire lequel est faux), 429.
+- Erreurs : 400 (format invalide), 401 `INVALID_CREDENTIALS` (message unique : « E-mail ou
+  mot de passe incorrect. » (le code administrateur s'ajoutera avec C-6), sans dire lequel est faux), 429.
 
 ### POST /api/auth/verify-2fa
 
