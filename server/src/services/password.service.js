@@ -50,6 +50,19 @@ export function generateTemporaryPassword() {
 }
 
 /**
+ * Génère un code administrateur (RG-07), par exemple « RP-7H2K-91 » ou « AD-Q4MZ-8C ».
+ * Comme le mot de passe temporaire, il est affiché une seule fois et seul son hachage est
+ * gardé. Sa vérification à la connexion arrive avec la tâche C-6.
+ * @param {'RP'|'AD'} prefix - RP pour un responsable pédagogique, AD pour un adjoint.
+ * @returns {string}
+ */
+export function generateAdminCode(prefix) {
+  const upper = ALPHABET.replace(/[a-z]/g, '');
+  const pick = (n) => Array.from({ length: n }, () => upper[randomInt(upper.length)]).join('');
+  return `${prefix}-${pick(4)}-${pick(2)}`;
+}
+
+/**
  * Vérifie la robustesse d'un nouveau mot de passe.
  * Règles affichées dans la maquette « Nouveau mot de passe » : au moins 10 caractères,
  * au moins une lettre et un chiffre.

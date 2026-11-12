@@ -121,3 +121,26 @@ quart d'heure au maximum (`express-rate-limit`).
 tâche C-6) n'est pas encore faite.**
 Raison : C-6 est prévue pour le 19 novembre. En attendant, ces comptes se connectent avec
 l'e-mail et le mot de passe seulement. Le champ `adminCode` est déjà accepté par la route.
+
+**12 nov. 2026 — Les adresses e-mail sont enregistrées en minuscules.**
+Raison : « Kevin@… » et « kevin@… » sont la même personne. La validation Zod convertit
+l'adresse avant tout enregistrement, et l'index unique de la base ignore déjà la casse.
+
+**12 nov. 2026 — Professeur dans plusieurs filières (RG-04) : le RP cherche d'abord la
+personne (`GET /accounts/teachers/search`), puis la lie avec `existingTeacherId`.**
+Raison : un seul compte et un seul mot de passe par personne. La recherche ne renvoie que
+le nom, les prénoms et les filières, jamais l'e-mail ni le téléphone.
+
+**12 nov. 2026 — Le code administrateur (RG-07) est généré à la création d'un RP ou d'un
+adjoint, affiché une seule fois, et seul son hachage est gardé.**
+Raison : C-6 n'aura plus qu'à le vérifier à la connexion. Format `RP-XXXX-XX` ou `AD-XXXX-XX`,
+sans caractères ambigus.
+
+**12 nov. 2026 — Réinitialiser un mot de passe : le directeur pour tout compte ; le RP et
+l'adjoint pour les étudiants, professeurs et adjoints de leur filière.**
+Raison : un RP ne doit pas pouvoir prendre la main sur le compte d'un directeur ou d'un
+autre RP. La personne devra changer le nouveau mot de passe temporaire.
+
+**12 nov. 2026 — `JWT_SECRET` : la valeur d'exemple de `.env.example` est refusée au
+démarrage.**
+Raison : copiée telle quelle, elle serait connue de toute personne ayant lu le dépôt.
