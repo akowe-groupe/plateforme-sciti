@@ -30,6 +30,19 @@ cp .env.example .env
 
 Le fichier `.env` reste sur ton ordinateur. Il est ignoré par Git : ne le commite jamais.
 
+## Sécurité et secrets
+
+- Les secrets (`DATABASE_URL`, `JWT_SECRET`) vivent uniquement dans `.env`, qui est ignoré par
+  Git. Le dépôt ne contient que `.env.example`, avec des valeurs fictives.
+- Chaque personne génère son propre `JWT_SECRET` en local (commande dans `.env.example`). En
+  production, l'hébergeur fournit des valeurs différentes de celles du développement.
+- Ne jamais coller un secret, un mot de passe ou une donnée réelle d'étudiant dans une PR, un
+  ticket ClickUp ou le canal de l'équipe. Un secret publié par erreur doit être changé.
+- Les mots de passe sont hachés avec bcrypt (coût 12) et ne sont jamais journalisés. Les mots
+  de passe temporaires sont tirés au hasard et affichés une seule fois.
+- La session voyage dans un cookie `HttpOnly`, `SameSite=Strict`, `Secure` en production.
+- `npm audit --omit=dev` doit rester à 0 faille avant chaque fusion.
+
 ## Base de données
 
 ```bash
