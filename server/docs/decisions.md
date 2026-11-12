@@ -96,3 +96,28 @@ Raison : règle n° 11 du guide. Tous les schémas importent `z` depuis `src/sch
 quel que soit leur statut.**
 Raison : une année est propre à une cohorte (RG-09). Un étudiant passé en année supérieure
 reste visible sur les modules qu'il a suivis (historique, RG-38).
+
+**12 nov. 2026 — Authentification (C-2 et C-4, faites par A pendant l'absence de C, à relire
+par C) : bcrypt via le paquet `bcryptjs`, coût 12.**
+Raison : bcrypt est cité par le cahier des charges. `bcryptjs` est écrit en JavaScript pur :
+pas de compilation native, donc il s'installe pareil sur les PC Windows de l'équipe et chez
+l'hébergeur. Le hachage produit est un bcrypt standard.
+
+**12 nov. 2026 — Session = jeton JWT (HS256) dans un cookie `HttpOnly`, `SameSite=Strict`,
+`Secure` en production, limité à `/api`.**
+Raison : le JavaScript de la page ne peut pas lire le jeton (protection XSS) et un autre site
+ne peut pas l'envoyer (protection CSRF). Le jeton ne contient que l'identifiant : rôle et
+filière sont relus en base à chaque requête, donc un compte désactivé est coupé tout de suite.
+
+**12 nov. 2026 — Session glissante de 30 minutes.**
+Raison : « jeton à durée de vie courte » (guide, règle 10) sans déconnecter un étudiant qui
+utilise l'application : le jeton est renouvelé dès qu'il a dépassé la moitié de sa durée.
+
+**12 nov. 2026 — Connexion : même message et même durée de réponse si l'e-mail n'existe pas.**
+Raison : on ne doit pas pouvoir deviner quels e-mails ont un compte. 10 échecs par IP et par
+quart d'heure au maximum (`express-rate-limit`).
+
+**12 nov. 2026 — Provisoire : la double vérification des directeurs, RP et adjoints (RG-07,
+tâche C-6) n'est pas encore faite.**
+Raison : C-6 est prévue pour le 19 novembre. En attendant, ces comptes se connectent avec
+l'e-mail et le mot de passe seulement. Le champ `adminCode` est déjà accepté par la route.

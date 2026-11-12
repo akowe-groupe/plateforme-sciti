@@ -10,6 +10,15 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().int().positive().default(3000),
   DATABASE_URL: z.string().startsWith('postgres', 'DATABASE_URL doit être une URL PostgreSQL.'),
+  // Secret de signature des jetons : long et aléatoire, jamais dans le dépôt.
+  JWT_SECRET: z.string().min(32, 'JWT_SECRET doit faire au moins 32 caractères.'),
+  // Durée d'inactivité avant déconnexion (le jeton est renouvelé pendant l'activité).
+  JWT_EXPIRES_IN: z
+    .string()
+    .regex(/^\d+[mh]$/, 'Exemple attendu : 30m ou 2h.')
+    .default('30m'),
+  // Tentatives de connexion autorisées par adresse IP et par quart d'heure.
+  LOGIN_MAX_ATTEMPTS: z.coerce.number().int().positive().default(10),
 });
 
 const parsed = envSchema.safeParse(process.env);
