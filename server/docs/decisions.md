@@ -76,3 +76,23 @@ vide.
 migration A-4. Ensuite, le service de structure les crée en même temps que la filière ou
 l'année (A-6).**
 Raison : RG-30, chaque filière et chaque année doivent toujours avoir leur canal.
+
+**12 nov. 2026 — Le contrôle des droits est partagé : le middleware de C vérifie le jeton et
+le rôle, les services vérifient le périmètre sur la ressource.**
+Raison : savoir si un module appartient à la filière d'un RP demande de lire la base. Les
+fonctions de `services/access.js` (`managesProgram`, `assertManagesProgram`) le font une fois
+pour tous les services. Le middleware de C remplit `req.user = { id, role, programId,
+isSuperStudent }` ; `requireUser` refuse toute route métier si `req.user` est absent.
+
+**12 nov. 2026 — Les services reçoivent la connexion à la base en dernier paramètre
+(`conn = db`).**
+Raison : les tests passent une transaction et l'annulent à la fin, sans toucher aux données
+de démonstration. En production, le paramètre est omis.
+
+**12 nov. 2026 — Messages de validation Zod en français (`z.config(z.locales.fr())`).**
+Raison : règle n° 11 du guide. Tous les schémas importent `z` depuis `src/schemas/zod.js`.
+
+**12 nov. 2026 — Les étudiants d'un module = toutes les inscriptions de l'année du module,
+quel que soit leur statut.**
+Raison : une année est propre à une cohorte (RG-09). Un étudiant passé en année supérieure
+reste visible sur les modules qu'il a suivis (historique, RG-38).
