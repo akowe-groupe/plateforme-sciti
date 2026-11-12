@@ -33,7 +33,7 @@ Le fichier `.env` reste sur ton ordinateur. Il est ignoré par Git : ne le commi
 ## Base de données
 
 ```bash
-npm run migrate    # crée les tables (src/db/migrations)
+npm run migrate    # crée les tables (src/db/migrations, détail dans docs/schema.md)
 npm run seed       # efface puis recrée les données de démonstration fictives
 npm run db:reset   # tout supprimer puis tout recréer
 ```

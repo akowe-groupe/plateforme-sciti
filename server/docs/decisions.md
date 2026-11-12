@@ -49,3 +49,30 @@ remplacer par la bibliothèque choisie par C (tâche C-2) si elle est différent
 **13 nov. 2026 — Le Bachelor dure 4 ans dans les données de démonstration.**
 Raison : RG-10 (« le RP du Bachelor gère les 4 années »). À confirmer avec T, car le
 programme actuel court sur 3 ans (2025-2028).
+
+**16 nov. 2026 — L'heure de validation du pointage est stockée sur la séance
+(`sessions.attendance_validated_at`), pas sur chaque présence.**
+Raison : RG-16 mesure les 15 minutes à partir de la validation de la feuille entière. Une
+seule heure par séance évite des heures différentes d'un étudiant à l'autre.
+
+**16 nov. 2026 — Le statut d'une séance est accompagné de ses dates (`moved_at`,
+`cancelled_at`, `confirmed_at`), et des contraintes CHECK les gardent cohérents.**
+Raison : quand le RP annule une confirmation (RG-28), `moved_at` permet de savoir si la séance
+redevient « prévue » ou « déplacée ». La base refuse aussi une séance « confirmée » sans auteur.
+
+**16 nov. 2026 — Le lien « professeur affecté au module » d'une séance est vérifié par le
+service, pas par une clé étrangère composée.**
+Raison : une clé étrangère vers `teacher_assignments` empêcherait pour toujours de retirer une
+affectation dès qu'une séance passée existe. Le service vérifie l'affectation à la création et
+au changement de professeur (A-7).
+
+**16 nov. 2026 — Délégations : le retrait anticipé est noté dans `revoked_at`, sans
+modifier `ends_at`.**
+Raison : on garde ce qui avait été accordé au départ. Une délégation est active si
+`starts_at <= maintenant`, que `ends_at` est vide ou dans le futur, et que `revoked_at` est
+vide.
+
+**16 nov. 2026 — Les canaux des filières et des années déjà présentes sont créés par la
+migration A-4. Ensuite, le service de structure les crée en même temps que la filière ou
+l'année (A-6).**
+Raison : RG-30, chaque filière et chaque année doivent toujours avoir leur canal.
