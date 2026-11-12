@@ -1,5 +1,5 @@
 /**
- * @file Données de démonstration de base (A-3). Toutes les personnes sont FICTIVES :
+ * @file Données de démonstration de base (A-3, canaux ajoutés en A-4). Toutes les personnes sont FICTIVES :
  * aucune donnée réelle d'étudiant ne doit entrer dans le dépôt.
  * Les adresses utilisent le domaine réservé .test, qui ne peut recevoir aucun e-mail.
  *
@@ -18,6 +18,14 @@ export async function seed(knex) {
   const passwordHash = await bcrypt.hash(demoPassword, 10);
 
   // On vide les tables dans l'ordre inverse des clés étrangères.
+  await knex('notifications').del();
+  await knex('posts').del();
+  await knex('channels').del();
+  await knex('grade_delegations').del();
+  await knex('grade_history').del();
+  await knex('grades').del();
+  await knex('attendance_records').del();
+  await knex('sessions').del();
   await knex('teacher_assignments').del();
   await knex('enrollments').del();
   await knex('users').del();
@@ -42,6 +50,13 @@ export async function seed(knex) {
       { program_id: master.id, number: 1, cohort: '2026' },
     ])
     .returning('*');
+
+  // RG-30 : un canal général, un canal par filière, un sous-canal par année.
+  await knex('channels').insert([
+    { scope: 'general' },
+    ...[bachelor, master].map((program) => ({ scope: 'program', program_id: program.id })),
+    ...[bachelor1, bachelor2, master1].map((level) => ({ scope: 'level', level_id: level.id })),
+  ]);
 
   // Deux semestres par année, le semestre 1 en cours (RG-26).
   const semesterRows = [bachelor1, bachelor2, master1].flatMap((level) => [
