@@ -66,31 +66,31 @@ Les listes longues acceptent `?page=1&pageSize=20` (maximum 100) et renvoient :
 `details` n'est rempli que pour les erreurs de validation : liste de
 `{ "field": "email", "message": "Adresse e-mail invalide." }`.
 
-| Statut | Code générique | Quand |
-|---|---|---|
-| 400 | `VALIDATION_ERROR` | Corps ou paramètres refusés par Zod |
-| 401 | `UNAUTHENTICATED` | Pas de jeton, jeton expiré ou invalide |
-| 403 | `FORBIDDEN` | Rôle non autorisé ou ressource hors périmètre (filière, année, module) |
-| 403 | `PASSWORD_CHANGE_REQUIRED` | Mot de passe temporaire pas encore changé |
-| 404 | `NOT_FOUND` | Ressource inexistante |
-| 409 | voir chaque fiche | Action impossible dans l'état actuel (verrouillé, déjà saisi...) |
-| 429 | `TOO_MANY_ATTEMPTS` | Trop de tentatives de connexion ou de code |
-| 500 | `INTERNAL_ERROR` | Erreur serveur (message générique, aucun détail interne) |
+| Statut | Code générique             | Quand                                                                  |
+| ------ | -------------------------- | ---------------------------------------------------------------------- |
+| 400    | `VALIDATION_ERROR`         | Corps ou paramètres refusés par Zod                                    |
+| 401    | `UNAUTHENTICATED`          | Pas de jeton, jeton expiré ou invalide                                 |
+| 403    | `FORBIDDEN`                | Rôle non autorisé ou ressource hors périmètre (filière, année, module) |
+| 403    | `PASSWORD_CHANGE_REQUIRED` | Mot de passe temporaire pas encore changé                              |
+| 404    | `NOT_FOUND`                | Ressource inexistante                                                  |
+| 409    | voir chaque fiche          | Action impossible dans l'état actuel (verrouillé, déjà saisi...)       |
+| 429    | `TOO_MANY_ATTEMPTS`        | Trop de tentatives de connexion ou de code                             |
+| 500    | `INTERNAL_ERROR`           | Erreur serveur (message générique, aucun détail interne)               |
 
 ### 0.6 Valeurs fixes (ENUM)
 
-| Champ | Valeurs |
-|---|---|
-| `role` | `director`, `programHead` (RP), `assistant` (adjoint), `teacher`, `student` |
-| `isSuperStudent` | `true` / `false` (étudiants seulement) |
-| Présence `value` | `P`, `A` |
-| Note `value` | `A`, `B`, `F` |
-| Note `status` | `entered` (saisie), `published` (publiée) |
-| Séance `status` | `scheduled` (prévue), `moved` (déplacée), `cancelled` (annulée), `confirmed` (confirmée) |
-| Inscription `status` | `ongoing` (en cours), `promoted` (passé), `repeating` (redoublant) |
-| Canal `scope` | `general`, `program`, `level` |
-| Délégation `type` | `temporary`, `permanent` |
-| Notification `type` | `SESSION_MOVED`, `SESSION_CANCELLED`, `YEAR_DECISION` |
+| Champ                | Valeurs                                                                                  |
+| -------------------- | ---------------------------------------------------------------------------------------- |
+| `role`               | `director`, `programHead` (RP), `assistant` (adjoint), `teacher`, `student`              |
+| `isSuperStudent`     | `true` / `false` (étudiants seulement)                                                   |
+| Présence `value`     | `P`, `A`                                                                                 |
+| Note `value`         | `A`, `B`, `F`                                                                            |
+| Note `status`        | `entered` (saisie), `published` (publiée)                                                |
+| Séance `status`      | `scheduled` (prévue), `moved` (déplacée), `cancelled` (annulée), `confirmed` (confirmée) |
+| Inscription `status` | `ongoing` (en cours), `promoted` (passé), `repeating` (redoublant)                       |
+| Canal `scope`        | `general`, `program`, `level`                                                            |
+| Délégation `type`    | `temporary`, `permanent`                                                                 |
+| Notification `type`  | `SESSION_MOVED`, `SESSION_CANCELLED`, `YEAR_DECISION`                                    |
 
 ### 0.7 Objets renvoyés souvent
 
@@ -114,69 +114,69 @@ Les listes longues acceptent `?page=1&pageSize=20` (maximum 100) et renvoient :
 Légende : ✓ = autorisé · **F** = limité à sa filière · **M** = limité à ses modules
 (affectations) · **Soi** = ses propres données · — = interdit.
 
-| # | Endpoint | Dir. | RP | Adj. | Prof. | Étu. | Super étu. |
-|---|---|---|---|---|---|---|---|
-| 1 | `POST /api/auth/login` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| 2 | `POST /api/auth/verify-2fa` | ✓ | ✓ | ✓ | — | — | — |
-| 3 | `POST /api/auth/change-password` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| 4 | `POST /api/auth/logout` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| 5 | `GET /api/auth/me` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| 6 | `GET /api/me/dashboard` | — | — | — | — | Soi | Soi |
-| 7 | `GET /api/me/modules` | — | — | — | — | Soi | Soi |
-| 8 | `GET /api/me/grades` | — | — | — | — | Soi | Soi |
-| 9 | `GET /api/me/attendance` | — | — | — | — | Soi | Soi |
-| 10 | `GET /api/me/enrollments` | — | — | — | — | Soi | Soi |
-| 11 | `GET /api/me/assignments` | — | — | — | Soi | — | — |
-| 12 | `GET /api/accounts` | ✓ | F | F | — | — | — |
-| 13 | `POST /api/accounts/students` | ✓ | F | F | — | — | — |
-| 14 | `GET /api/accounts/teachers/search` | ✓ | ✓ | ✓ | — | — | — |
-| 15 | `POST /api/accounts/teachers` | ✓ | F | F | — | — | — |
-| 16 | `POST /api/accounts/teachers/:teacherId/assignments` | ✓ | F | F | — | — | — |
-| 17 | `DELETE /api/accounts/teachers/:teacherId/assignments/:assignmentId` | ✓ | F | F | — | — | — |
-| 18 | `POST /api/accounts/program-heads` | ✓ | — | — | — | — | — |
-| 19 | `POST /api/accounts/assistants` | ✓ | F | — | — | — | — |
-| 20 | `PATCH /api/accounts/students/:studentId/super-student` | ✓ | F | F | — | — | — |
-| 21 | `POST /api/accounts/:userId/reset-password` | ✓ | F | F | — | — | — |
-| 22 | `POST /api/accounts/students/:studentId/year-decision` | ✓ | F | F | — | — | — |
-| 23 | `GET /api/structure/programs` | ✓ | F | F | M | Soi | Soi |
-| 24 | `POST /api/structure/programs` | ✓ | — | — | — | — | — |
-| 25 | `POST /api/structure/programs/:programId/levels` | ✓ | F | F | — | — | — |
-| 26 | `GET /api/structure/levels/:levelId` | ✓ | F | F | M | Soi | Soi |
-| 27 | `PATCH /api/structure/levels/:levelId/current-semester` | ✓ | F | F | — | — | — |
-| 28 | `POST /api/structure/semesters/:semesterId/modules` | ✓ | F | F | — | — | — |
-| 29 | `PATCH /api/structure/modules/:moduleId` | ✓ | F | F | — | — | — |
-| 30 | `DELETE /api/structure/modules/:moduleId` | ✓ | F | F | — | — | — |
-| 31 | `GET /api/structure/modules/:moduleId/students` | ✓ | F | F | M | — | — |
-| 32 | `GET /api/schedule/sessions` | ✓ | F | F | M | Soi | Soi |
-| 33 | `POST /api/schedule/sessions` | ✓ | F | F | — | — | — |
-| 34 | `PATCH /api/schedule/sessions/:sessionId` | ✓ | F | F | — | — | — |
-| 35 | `POST /api/schedule/sessions/:sessionId/move` | ✓ | F | F | — | — | — |
-| 36 | `POST /api/schedule/sessions/:sessionId/cancel` | ✓ | F | F | — | — | — |
-| 37 | `PUT /api/schedule/sessions/:sessionId/confirmation` | ✓ | F | F | M (confirmer seulement) | — | — |
-| 38 | `GET /api/attendance/sessions/:sessionId` | ✓ | F | F | M | — | — |
-| 39 | `POST /api/attendance/sessions/:sessionId` | — | — | — | M | — | — |
-| 40 | `PATCH /api/attendance/sessions/:sessionId` | — | — | — | M | — | — |
-| 41 | `GET /api/attendance/levels/:levelId/summary` | ✓ | F | F | M | — | — |
-| 42 | `GET /api/grades/modules/:moduleId` | ✓ | F | F | M | — | — |
-| 43 | `POST /api/grades/modules/:moduleId` | — | — | — | M | — | — |
-| 44 | `GET /api/grades/levels/:levelId` | ✓ | F | F | — | — | — |
-| 45 | `PATCH /api/grades/:gradeId` | ✓ | F + délégation | — | — | — | — |
-| 46 | `GET /api/grades/:gradeId/history` | ✓ | F | F | — | — | — |
-| 47 | `POST /api/grades/publications` | ✓ | F | F | — | — | — |
-| 48 | `POST /api/grades/delegations` | ✓ | — | — | — | — | — |
-| 49 | `GET /api/grades/delegations` | ✓ | — | — | — | — | — |
-| 50 | `DELETE /api/grades/delegations/:delegationId` | ✓ | — | — | — | — | — |
-| 51 | `GET /api/channels` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| 52 | `GET /api/channels/feed` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| 53 | `GET /api/channels/:channelId/posts` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| 54 | `POST /api/channels/:channelId/posts` | ✓ | F + général | F + général | M | — | ✓ (voir RG-31) |
-| 55 | `PATCH /api/channels/:channelId/posts/:postId` | auteur | auteur | auteur | auteur | — | auteur |
-| 56 | `PATCH /api/channels/:channelId/posts/:postId/visibility` | ✓ | F | F | — | — | — |
-| 57 | `DELETE /api/channels/:channelId/posts/:postId` | ✓ | F | F | — | — | — |
-| 58 | `GET /api/notifications` | Soi | Soi | Soi | Soi | Soi | Soi |
-| 59 | `PATCH /api/notifications/:notificationId/read` | Soi | Soi | Soi | Soi | Soi | Soi |
-| 60 | `POST /api/notifications/read-all` | Soi | Soi | Soi | Soi | Soi | Soi |
-| 61 | `GET /api/overview` | ✓ | F | F | — | — | — |
+| #   | Endpoint                                                             | Dir.   | RP             | Adj.        | Prof.                   | Étu. | Super étu.     |
+| --- | -------------------------------------------------------------------- | ------ | -------------- | ----------- | ----------------------- | ---- | -------------- |
+| 1   | `POST /api/auth/login`                                               | ✓      | ✓              | ✓           | ✓                       | ✓    | ✓              |
+| 2   | `POST /api/auth/verify-2fa`                                          | ✓      | ✓              | ✓           | —                       | —    | —              |
+| 3   | `POST /api/auth/change-password`                                     | ✓      | ✓              | ✓           | ✓                       | ✓    | ✓              |
+| 4   | `POST /api/auth/logout`                                              | ✓      | ✓              | ✓           | ✓                       | ✓    | ✓              |
+| 5   | `GET /api/auth/me`                                                   | ✓      | ✓              | ✓           | ✓                       | ✓    | ✓              |
+| 6   | `GET /api/me/dashboard`                                              | —      | —              | —           | —                       | Soi  | Soi            |
+| 7   | `GET /api/me/modules`                                                | —      | —              | —           | —                       | Soi  | Soi            |
+| 8   | `GET /api/me/grades`                                                 | —      | —              | —           | —                       | Soi  | Soi            |
+| 9   | `GET /api/me/attendance`                                             | —      | —              | —           | —                       | Soi  | Soi            |
+| 10  | `GET /api/me/enrollments`                                            | —      | —              | —           | —                       | Soi  | Soi            |
+| 11  | `GET /api/me/assignments`                                            | —      | —              | —           | Soi                     | —    | —              |
+| 12  | `GET /api/accounts`                                                  | ✓      | F              | F           | —                       | —    | —              |
+| 13  | `POST /api/accounts/students`                                        | ✓      | F              | F           | —                       | —    | —              |
+| 14  | `GET /api/accounts/teachers/search`                                  | ✓      | ✓              | ✓           | —                       | —    | —              |
+| 15  | `POST /api/accounts/teachers`                                        | ✓      | F              | F           | —                       | —    | —              |
+| 16  | `POST /api/accounts/teachers/:teacherId/assignments`                 | ✓      | F              | F           | —                       | —    | —              |
+| 17  | `DELETE /api/accounts/teachers/:teacherId/assignments/:assignmentId` | ✓      | F              | F           | —                       | —    | —              |
+| 18  | `POST /api/accounts/program-heads`                                   | ✓      | —              | —           | —                       | —    | —              |
+| 19  | `POST /api/accounts/assistants`                                      | ✓      | F              | —           | —                       | —    | —              |
+| 20  | `PATCH /api/accounts/students/:studentId/super-student`              | ✓      | F              | F           | —                       | —    | —              |
+| 21  | `POST /api/accounts/:userId/reset-password`                          | ✓      | F              | F           | —                       | —    | —              |
+| 22  | `POST /api/accounts/students/:studentId/year-decision`               | ✓      | F              | F           | —                       | —    | —              |
+| 23  | `GET /api/structure/programs`                                        | ✓      | F              | F           | M                       | Soi  | Soi            |
+| 24  | `POST /api/structure/programs`                                       | ✓      | —              | —           | —                       | —    | —              |
+| 25  | `POST /api/structure/programs/:programId/levels`                     | ✓      | F              | F           | —                       | —    | —              |
+| 26  | `GET /api/structure/levels/:levelId`                                 | ✓      | F              | F           | M                       | Soi  | Soi            |
+| 27  | `PATCH /api/structure/levels/:levelId/current-semester`              | ✓      | F              | F           | —                       | —    | —              |
+| 28  | `POST /api/structure/semesters/:semesterId/modules`                  | ✓      | F              | F           | —                       | —    | —              |
+| 29  | `PATCH /api/structure/modules/:moduleId`                             | ✓      | F              | F           | —                       | —    | —              |
+| 30  | `DELETE /api/structure/modules/:moduleId`                            | ✓      | F              | F           | —                       | —    | —              |
+| 31  | `GET /api/structure/modules/:moduleId/students`                      | ✓      | F              | F           | M                       | —    | —              |
+| 32  | `GET /api/schedule/sessions`                                         | ✓      | F              | F           | M                       | Soi  | Soi            |
+| 33  | `POST /api/schedule/sessions`                                        | ✓      | F              | F           | —                       | —    | —              |
+| 34  | `PATCH /api/schedule/sessions/:sessionId`                            | ✓      | F              | F           | —                       | —    | —              |
+| 35  | `POST /api/schedule/sessions/:sessionId/move`                        | ✓      | F              | F           | —                       | —    | —              |
+| 36  | `POST /api/schedule/sessions/:sessionId/cancel`                      | ✓      | F              | F           | —                       | —    | —              |
+| 37  | `PUT /api/schedule/sessions/:sessionId/confirmation`                 | ✓      | F              | F           | M (confirmer seulement) | —    | —              |
+| 38  | `GET /api/attendance/sessions/:sessionId`                            | ✓      | F              | F           | M                       | —    | —              |
+| 39  | `POST /api/attendance/sessions/:sessionId`                           | —      | —              | —           | M                       | —    | —              |
+| 40  | `PATCH /api/attendance/sessions/:sessionId`                          | —      | —              | —           | M                       | —    | —              |
+| 41  | `GET /api/attendance/levels/:levelId/summary`                        | ✓      | F              | F           | M                       | —    | —              |
+| 42  | `GET /api/grades/modules/:moduleId`                                  | ✓      | F              | F           | M                       | —    | —              |
+| 43  | `POST /api/grades/modules/:moduleId`                                 | —      | —              | —           | M                       | —    | —              |
+| 44  | `GET /api/grades/levels/:levelId`                                    | ✓      | F              | F           | —                       | —    | —              |
+| 45  | `PATCH /api/grades/:gradeId`                                         | ✓      | F + délégation | —           | —                       | —    | —              |
+| 46  | `GET /api/grades/:gradeId/history`                                   | ✓      | F              | F           | —                       | —    | —              |
+| 47  | `POST /api/grades/publications`                                      | ✓      | F              | F           | —                       | —    | —              |
+| 48  | `POST /api/grades/delegations`                                       | ✓      | —              | —           | —                       | —    | —              |
+| 49  | `GET /api/grades/delegations`                                        | ✓      | —              | —           | —                       | —    | —              |
+| 50  | `DELETE /api/grades/delegations/:delegationId`                       | ✓      | —              | —           | —                       | —    | —              |
+| 51  | `GET /api/channels`                                                  | ✓      | ✓              | ✓           | ✓                       | ✓    | ✓              |
+| 52  | `GET /api/channels/feed`                                             | ✓      | ✓              | ✓           | ✓                       | ✓    | ✓              |
+| 53  | `GET /api/channels/:channelId/posts`                                 | ✓      | ✓              | ✓           | ✓                       | ✓    | ✓              |
+| 54  | `POST /api/channels/:channelId/posts`                                | ✓      | F + général    | F + général | M                       | —    | ✓ (voir RG-31) |
+| 55  | `PATCH /api/channels/:channelId/posts/:postId`                       | auteur | auteur         | auteur      | auteur                  | —    | auteur         |
+| 56  | `PATCH /api/channels/:channelId/posts/:postId/visibility`            | ✓      | F              | F           | —                       | —    | —              |
+| 57  | `DELETE /api/channels/:channelId/posts/:postId`                      | ✓      | F              | F           | —                       | —    | —              |
+| 58  | `GET /api/notifications`                                             | Soi    | Soi            | Soi         | Soi                     | Soi  | Soi            |
+| 59  | `PATCH /api/notifications/:notificationId/read`                      | Soi    | Soi            | Soi         | Soi                     | Soi  | Soi            |
+| 60  | `POST /api/notifications/read-all`                                   | Soi    | Soi            | Soi         | Soi                     | Soi  | Soi            |
+| 61  | `GET /api/overview`                                                  | ✓      | F              | F           | —                       | —    | —              |
 
 Ordre de livraison prévu : authentification (avec C) et comptes en A-5, structure en A-6 et
 séances en A-7, au sprint 2. Puis, au sprint 3 : présences (A-9), notes (A-10), heures restantes
@@ -242,15 +242,18 @@ Tâches C-4 et C-6 (C avec A). Sprint 2.
   "scope": {
     "programId": "...",
     "levelId": "...",
-    "assignments": [{ "id": "...", "moduleId": "...", "moduleName": "...", "programId": "...", "levelId": "..." }],
+    "assignments": [
+      { "id": "...", "moduleId": "...", "moduleName": "...", "programId": "...", "levelId": "..." }
+    ],
     "canCorrectGrades": false,
     "delegationEndsAt": null
   }
 }
 ```
 
-  `levelId` concerne les étudiants, `assignments` les professeurs, `canCorrectGrades` les
-  directeurs et les RP délégués.
+`levelId` concerne les étudiants, `assignments` les professeurs, `canCorrectGrades` les
+directeurs et les RP délégués.
+
 - Erreurs : 401.
 
 ---
@@ -268,7 +271,7 @@ l'identifiant contenu dans le jeton. Un étudiant ne peut donc pas lire les donn
 - Rôles autorisés : étudiant, super étudiant.
 - Règles de gestion : RG-27 ; user stories E3 et E5.
 - Réponse 200 : `{ currentSemester: { id, number }, modules: [...comme /me/modules],
-  latestPosts: [5 dernières publications], unreadNotifications: 3 }`.
+latestPosts: [5 dernières publications], unreadNotifications: 3 }`.
 - Erreurs : 401, 403.
 - Tâche : A-11 (sprint 3).
 
@@ -283,14 +286,20 @@ l'identifiant contenu dans le jeton. Un étudiant ne peut donc pas lire les donn
 {
   "semester": { "id": "...", "number": 1 },
   "modules": [
-    { "id": "...", "name": "Bases de données", "totalHours": 30,
-      "confirmedHours": 12, "remainingHours": 18 }
+    {
+      "id": "...",
+      "name": "Bases de données",
+      "totalHours": 30,
+      "confirmedHours": 12,
+      "remainingHours": 18
+    }
   ]
 }
 ```
 
-  `remainingHours` = volume horaire total − somme des durées des séances confirmées. Les
-  séances annulées ne comptent pas. Le calcul est fait dans PostgreSQL.
+`remainingHours` = volume horaire total − somme des durées des séances confirmées. Les
+séances annulées ne comptent pas. Le calcul est fait dans PostgreSQL.
+
 - Erreurs : 401, 403.
 - Tâche : A-11.
 
@@ -305,15 +314,20 @@ l'identifiant contenu dans le jeton. Un étudiant ne peut donc pas lire les donn
 
 ```json
 {
-  "level": { "id": "...", "number": 2, "programName": "Bachelor Digitalisation et Science des données" },
+  "level": {
+    "id": "...",
+    "number": 2,
+    "programName": "Bachelor Digitalisation et Science des données"
+  },
   "semesters": [
-    { "number": 1, "modules": [ { "moduleId": "...", "moduleName": "...", "value": "A" } ] }
+    { "number": 1, "modules": [{ "moduleId": "...", "moduleName": "...", "value": "A" }] }
   ]
 }
 ```
 
-  Seules les notes au statut `published` sont renvoyées. Un module sans note publiée
-  n'apparaît pas.
+Seules les notes au statut `published` sont renvoyées. Un module sans note publiée
+n'apparaît pas.
+
 - Erreurs : 401, 403 (`levelId` qui n'est pas une inscription de l'étudiant).
 - Tâche : A-10.
 
@@ -330,9 +344,14 @@ l'identifiant contenu dans le jeton. Un étudiant ne peut donc pas lire les donn
 {
   "global": { "confirmedSessions": 40, "absences": 3, "attendanceRate": 92.5 },
   "modules": [
-    { "moduleId": "...", "moduleName": "...", "confirmedSessions": 8, "absences": 1,
+    {
+      "moduleId": "...",
+      "moduleName": "...",
+      "confirmedSessions": 8,
+      "absences": 1,
       "attendanceRate": 87.5,
-      "sessions": [ { "sessionId": "...", "startsAt": "...", "value": "P" } ] }
+      "sessions": [{ "sessionId": "...", "startsAt": "...", "value": "P" }]
+    }
   ]
 }
 ```
@@ -355,7 +374,7 @@ l'identifiant contenu dans le jeton. Un étudiant ne peut donc pas lire les donn
 - Rôles autorisés : professeur.
 - Règles de gestion : RG-03, RG-04 ; user story P1.
 - Réponse 200 : `{ items: [ { assignmentId, moduleId, moduleName, programId, programName,
-  levelId, levelNumber, semesterNumber, studentCount } ] }`.
+levelId, levelNumber, semesterNumber, studentCount } ] }`.
 - Erreurs : 401, 403.
 - Tâche : A-5.
 
@@ -494,7 +513,7 @@ cohorte se fait en ajoutant des lignes, jamais en modifiant le schéma.
 - Rôles autorisés : tous. Le résultat est filtré par périmètre : un étudiant ne voit que
   sa filière, un professeur les filières de ses affectations.
 - Réponse 200 : `{ items: [ { id, name, durationYears, levels: [ { id, number, cohort,
-  currentSemesterNumber } ] } ] }`.
+currentSemesterNumber } ] } ] }`.
 - Erreurs : 401.
 
 ### POST /api/structure/programs
@@ -514,7 +533,7 @@ cohorte se fait en ajoutant des lignes, jamais en modifiant le schéma.
 - Règles de gestion : RG-09, RG-30.
 - Corps de la requête : `{ number, cohort }`, par exemple `{ "number": 1, "cohort": "2026-2027" }`.
 - Réponse 201 : `{ level, semesters: [ {id, number: 1, active: true}, {id, number: 2,
-  active: false} ], channelId }`.
+active: false} ], channelId }`.
 - Erreurs : 400 (`number` supérieur à la durée de la filière), 401, 403, 409
   `LEVEL_ALREADY_EXISTS`.
 
@@ -524,7 +543,7 @@ cohorte se fait en ajoutant des lignes, jamais en modifiant le schéma.
 - Rôles autorisés : directeur ; RP et adjoint de la filière ; professeur affecté à un module
   de cette année ; étudiant inscrit dans cette année.
 - Réponse 200 : `{ level, semesters: [ { id, number, active, modules: [ { id, name,
-  totalHours, teachers: [ {id, name} ] } ] } ] }`.
+totalHours, teachers: [ {id, name} ] } ] } ] }`.
 - Erreurs : 401, 403, 404.
 
 ### PATCH /api/structure/levels/:levelId/current-semester
@@ -668,12 +687,13 @@ Tâches A-9 et A-11 (sprint 3). Règles RG-15 à RG-19.
   "lockedAt": null,
   "canValidate": true,
   "canCorrect": false,
-  "students": [ { "studentId": "...", "lastName": "...", "firstNames": "...", "value": null } ]
+  "students": [{ "studentId": "...", "lastName": "...", "firstNames": "...", "value": null }]
 }
 ```
 
-  `canValidate` et `canCorrect` sont calculés par le serveur. B s'en sert pour afficher les
-  boutons, mais le serveur revérifie au moment du POST ou du PATCH.
+`canValidate` et `canCorrect` sont calculés par le serveur. B s'en sert pour afficher les
+boutons, mais le serveur revérifie au moment du POST ou du PATCH.
+
 - Erreurs : 401, 403, 404.
 
 ### POST /api/attendance/sessions/:sessionId
@@ -714,7 +734,7 @@ Tâches A-9 et A-11 (sprint 3). Règles RG-15 à RG-19.
 - Règles de gestion : RG-19 ; user story D1.
 - Paramètres de requête : `moduleId`, `semesterNumber`, `page`, `pageSize`.
 - Réponse 200 : liste paginée de `{ studentId, lastName, firstNames, confirmedSessions,
-  absences, attendanceRate }`.
+absences, attendanceRate }`.
 - Erreurs : 400, 401, 403, 404.
 
 ---
@@ -729,7 +749,7 @@ Tâche A-10 (sprint 3). Règles RG-20 à RG-25.
 - Rôles autorisés : professeur affecté ; directeur ; RP et adjoint de la filière.
 - Règles de gestion : RG-20, RG-21 ; user story R6.
 - Réponse 200 : `{ module, students: [ { studentId, lastName, firstNames, gradeId, value,
-  status, enteredAt } ] }`. `value` vaut `null` si la note n'est pas encore saisie.
+status, enteredAt } ] }`. `value` vaut `null` si la note n'est pas encore saisie.
 - Erreurs : 401, 403, 404.
 
 ### POST /api/grades/modules/:moduleId
@@ -752,7 +772,7 @@ Tâche A-10 (sprint 3). Règles RG-20 à RG-25.
 - Règles de gestion : user stories R6 et D1.
 - Paramètres de requête : `semesterNumber`, `page`, `pageSize`.
 - Réponse 200 : `{ modules: [ {id, name} ], students: [ { studentId, lastName, firstNames,
-  grades: { "<moduleId>": { gradeId, value, status } } } ], total }`.
+grades: { "<moduleId>": { gradeId, value, status } } } ], total }`.
 - Erreurs : 401, 403, 404.
 
 ### PATCH /api/grades/:gradeId
@@ -796,7 +816,7 @@ Tâche A-10 (sprint 3). Règles RG-20 à RG-25.
 - Rôles autorisés : directeur.
 - Règles de gestion : RG-22 ; user story D4.
 - Corps de la requête : `{ programHeadId, type: 'temporary' | 'permanent', startsAt,
-  endsAt? }`. `endsAt` est obligatoire si `type` vaut `temporary`.
+endsAt? }`. `endsAt` est obligatoire si `type` vaut `temporary`.
 - Réponse 201 : `{ delegation: { id, programHeadId, grantedById, type, startsAt, endsAt } }`.
 - Erreurs : 400 (`endsAt` manquant ou antérieur à `startsAt`), 401, 403, 404 (utilisateur
   qui n'est pas RP).
@@ -844,7 +864,7 @@ section 5).
 - Règles de gestion : RG-30, RG-33 ; user story E5.
 - Paramètres de requête : `page`, `pageSize`.
 - Réponse 200 : liste paginée de `{ id, channelId, channelName, title, content, authorName,
-  authorRole, createdAt, edited }`, de la plus récente à la plus ancienne. Les publications
+authorRole, createdAt, edited }`, de la plus récente à la plus ancienne. Les publications
   masquées n'y apparaissent pas.
 - Erreurs : 401.
 
@@ -870,7 +890,7 @@ section 5).
 - Règles de gestion : RG-31, RG-32, RG-33.
 - Corps de la requête : `{ title, content }`.
 - Réponse 201 : `{ post: { id, channelId, title, content, authorName, createdAt,
-  edited: false, editableUntil } }`. `editableUntil` = `createdAt` + 5 minutes.
+edited: false, editableUntil } }`. `editableUntil` = `createdAt` + 5 minutes.
 - Erreurs : 400, 401, 403, 404.
 
 ### PATCH /api/channels/:channelId/posts/:postId
@@ -942,8 +962,8 @@ par la décision de passage d'année (RG-36). B les affiche dans la section Info
 - Rôles autorisés : directeur (tout l'établissement) ; RP et adjoint (leur filière).
 - Règles de gestion : user story D1.
 - Réponse 200 : `{ programs: [ { id, name, levels: [ { id, number, cohort, studentCount,
-  teacherCount, attendanceRate, grades: { A: 12, B: 20, F: 3, missing: 5 },
-  publishedSemesters: [1] } ] } ] }`. Tous les chiffres sont calculés dans PostgreSQL.
+teacherCount, attendanceRate, grades: { A: 12, B: 20, F: 3, missing: 5 },
+publishedSemesters: [1] } ] } ] }`. Tous les chiffres sont calculés dans PostgreSQL.
 - Erreurs : 401, 403.
 - Tâche : A-11.
 
@@ -951,15 +971,15 @@ par la décision de passage d'année (RG-36). B les affiche dans la section Info
 
 ## 12. Points à confirmer avant le 13 novembre
 
-| # | Question | Avec qui | Choix provisoire dans ce contrat |
-|---|---|---|---|
-| 1 | Le « numéro » d'un étudiant ou d'un professeur (RG-02, RG-03) : téléphone ou matricule ? | T | Téléphone (`phone`) |
-| 2 | Professeur avec comptes liés (RG-04) : avec quel e-mail se connecte-t-il ? | T, C | Un seul compte, une seule adresse de connexion ; les filières ajoutent des affectations |
-| 3 | Qui crée une filière ? | T | Directeur seulement |
-| 4 | Le professeur peut-il annuler sa propre confirmation de cours ? | T | Non, seul le RP corrige (RG-28) |
-| 5 | Confirmation d'un cours : possible dès l'heure de début ou seulement après la fin ? | T | Dès l'heure de début |
-| 6 | Un adjoint peut-il recevoir une délégation de correction de notes (RG-22) ? | T | Non, seulement un RP |
-| 7 | Dernière année (fin du cursus) : quelle valeur pour `nextLevelId` ? | T | Hors périmètre du prototype |
-| 8 | Transport du jeton : cookie HttpOnly ou en-tête `Authorization` ? | C (C-2) | Cookie HttpOnly |
-| 9 | Droits de chaque route | C (C-1) | Sections 3 et 4 du cahier des charges |
-| 10 | Création de séances répétées (toutes les semaines) en une fois : à ajouter ? | T (nouvelle demande) | Non incluse : une séance par requête |
+| #   | Question                                                                                 | Avec qui             | Choix provisoire dans ce contrat                                                        |
+| --- | ---------------------------------------------------------------------------------------- | -------------------- | --------------------------------------------------------------------------------------- |
+| 1   | Le « numéro » d'un étudiant ou d'un professeur (RG-02, RG-03) : téléphone ou matricule ? | T                    | Téléphone (`phone`)                                                                     |
+| 2   | Professeur avec comptes liés (RG-04) : avec quel e-mail se connecte-t-il ?               | T, C                 | Un seul compte, une seule adresse de connexion ; les filières ajoutent des affectations |
+| 3   | Qui crée une filière ?                                                                   | T                    | Directeur seulement                                                                     |
+| 4   | Le professeur peut-il annuler sa propre confirmation de cours ?                          | T                    | Non, seul le RP corrige (RG-28)                                                         |
+| 5   | Confirmation d'un cours : possible dès l'heure de début ou seulement après la fin ?      | T                    | Dès l'heure de début                                                                    |
+| 6   | Un adjoint peut-il recevoir une délégation de correction de notes (RG-22) ?              | T                    | Non, seulement un RP                                                                    |
+| 7   | Dernière année (fin du cursus) : quelle valeur pour `nextLevelId` ?                      | T                    | Hors périmètre du prototype                                                             |
+| 8   | Transport du jeton : cookie HttpOnly ou en-tête `Authorization` ?                        | C (C-2)              | Cookie HttpOnly                                                                         |
+| 9   | Droits de chaque route                                                                   | C (C-1)              | Sections 3 et 4 du cahier des charges                                                   |
+| 10  | Création de séances répétées (toutes les semaines) en une fois : à ajouter ?             | T (nouvelle demande) | Non incluse : une séance par requête                                                    |
