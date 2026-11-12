@@ -11,7 +11,14 @@ const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(3000),
   DATABASE_URL: z.string().startsWith('postgres', 'DATABASE_URL doit être une URL PostgreSQL.'),
   // Secret de signature des jetons : long et aléatoire, jamais dans le dépôt.
-  JWT_SECRET: z.string().min(32, 'JWT_SECRET doit faire au moins 32 caractères.'),
+  // La valeur d'exemple de .env.example (« changer-moi… ») est refusée : copiée telle quelle,
+  // elle serait connue de toute personne ayant lu le dépôt.
+  JWT_SECRET: z
+    .string()
+    .min(32, 'JWT_SECRET doit faire au moins 32 caractères.')
+    .refine((value) => !value.includes('changer-moi'), {
+      message: "JWT_SECRET contient encore la valeur d'exemple : génère ton propre secret.",
+    }),
   // Durée d'inactivité avant déconnexion (le jeton est renouvelé pendant l'activité).
   JWT_EXPIRES_IN: z
     .string()
