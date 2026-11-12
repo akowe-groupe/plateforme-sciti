@@ -6,22 +6,28 @@
 import express from 'express';
 import helmet from 'helmet';
 import { healthRouter } from './routes/health.routes.js';
+import { authRouter } from './routes/auth.routes.js';
 import { structureRouter } from './routes/structure.routes.js';
+import { authenticate, requirePasswordChanged } from './middlewares/authenticate.js';
 import { errorHandler, notFoundHandler } from './middlewares/error-handler.js';
 
 export const app = express();
 
+// Derrière l'hébergeur (proxy), l'adresse IP réelle sert à limiter les tentatives de connexion.
+app.set('trust proxy', 1);
 // Règle technique n° 10 : en-têtes de sécurité HTTP.
 app.use(helmet());
 // Limite de taille du corps : l'API n'attend que de petits JSON.
 app.use(express.json({ limit: '100kb' }));
 
+// Routes publiques ou qui gèrent elles-mêmes la session.
 app.use('/api/health', healthRouter);
+app.use('/api/auth', authRouter);
 
-// Le middleware d'authentification de C (C-4, C-5) se place ici : il vérifie le jeton et
-// remplit req.user. Tant qu'il n'existe pas, les routes métier répondent 401.
-app.use('/api/structure', structureRouter);
-// Les autres domaines (auth, accounts, schedule...) arrivent avec A-5 à A-13.
+// Toutes les routes métier : session valide (RG-08) et mot de passe temporaire changé (RG-06).
+const business = [authenticate, requirePasswordChanged];
+app.use('/api/structure', ...business, structureRouter);
+// Les autres domaines (accounts, schedule, attendance...) arrivent avec A-5 à A-13.
 
 app.use(notFoundHandler);
 app.use(errorHandler);
