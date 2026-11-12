@@ -1,14 +1,13 @@
 /**
- * Tests des contraintes de la base (dernier rempart, règle technique n° 5 du guide).
- * Chaque test travaille dans une transaction annulée à la fin : les données de
- * démonstration ne sont jamais modifiées.
- *
- * Codes d'erreur PostgreSQL utilisés : 23505 = doublon (UNIQUE), 23514 = CHECK refusé,
- * 22P02 = valeur hors ENUM.
+ * Tests des contraintes des tables de base (A-3), dernier rempart de la règle technique n° 5
+ * du guide. Outils communs : tests/helpers/db.js.
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { db } from '../src/db/knex.js';
+import { withRollback, assertRefused, createLevel } from './helpers/db.js';
+
+const baseUser = { last_name: 'TEST', first_names: 'Fictif', password_hash: 'x' };
 
 before(async () => {
   await db.migrate.latest({ directory: './src/db/migrations' });
@@ -17,45 +16,6 @@ before(async () => {
 after(async () => {
   await db.destroy();
 });
-
-/** Exécute fn dans une transaction, puis l'annule quoi qu'il arrive. */
-async function withRollback(fn) {
-  const trx = await db.transaction();
-  try {
-    await fn(trx);
-  } finally {
-    await trx.rollback();
-  }
-}
-
-/** Vérifie qu'une requête est refusée par la base avec le code PostgreSQL attendu. */
-async function assertRefused(query, pgCode) {
-  await assert.rejects(query, (err) => {
-    assert.equal(err.code, pgCode);
-    return true;
-  });
-}
-
-const baseUser = {
-  last_name: 'TEST',
-  first_names: 'Fictif',
-  password_hash: 'x',
-};
-
-/** Crée une filière avec une année et ses deux semestres. */
-async function createLevel(trx, programName = 'Filière de test') {
-  const [program] = await trx('programs')
-    .insert({ name: programName, duration_years: 3 })
-    .returning('*');
-  const [level] = await trx('levels')
-    .insert({ program_id: program.id, number: 1, cohort: '2026' })
-    .returning('*');
-  await trx('semesters').insert([
-    { level_id: level.id, number: 1, is_active: true },
-    { level_id: level.id, number: 2, is_active: false },
-  ]);
-  return { program, level };
-}
 
 test('ajouter une filière, une année et une cohorte se fait par des lignes, sans changer le schéma', async () => {
   await withRollback(async (trx) => {
@@ -206,7 +166,7 @@ test('un professeur ne peut pas être affecté deux fois au même module', async
     const { level } = await createLevel(trx);
     const semester = await trx('semesters').where({ level_id: level.id, number: 1 }).first();
     const [module] = await trx('modules')
-      .insert({ semester_id: semester.id, name: 'Module test', total_hours: 10 })
+      .insert({ semester_id: semester.id, name: 'Module affectation', total_hours: 10 })
       .returning('*');
     const [teacher] = await trx('users')
       .insert({ ...baseUser, email: 'aff@demo.sciti.test', role: 'teacher' })
